@@ -1,0 +1,1455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CrazyCats by Kissa — Turn Your Cat Into Art 🐱</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+/* ═══ TOKENS ═══ */
+:root {
+  --ink:      #1A1A1A;
+  --orange:   #C47A2C;
+  --orange-lt:#F0A84A;
+  --cream:    #F5F5F0;
+  --beige:    #E8E1D9;
+  --sand:     #DDD3C5;
+  --muted:    #7A7068;
+  --white:    #FFFFFF;
+  --accent:   #D4745A;
+  --gold:     #C9A84C;
+  --green:    #3D7A55;
+  --f-display:'Playfair Display', Georgia, serif;
+  --f-body:   'Plus Jakarta Sans', sans-serif;
+  --r:        16px;
+  --sh:       0 2px 20px rgba(26,26,26,.08);
+  --sh-md:    0 8px 40px rgba(26,26,26,.12);
+  --sh-lg:    0 20px 60px rgba(26,26,26,.18);
+  --ease:     cubic-bezier(.25,.46,.45,.94);
+  --t:        .32s var(--ease);
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
+body{font-family:var(--f-body);background:var(--cream);color:var(--ink);overflow-x:hidden}
+a{text-decoration:none;color:inherit}
+button{font-family:var(--f-body);cursor:pointer;border:none;background:none}
+
+/* ═══ KISSA SVG MASCOT (reusable) ═══ */
+.kissa-svg{ display:block; }
+
+/* ═══ REVEAL ═══ */
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .75s var(--ease),transform .75s var(--ease)}
+.reveal.in{opacity:1;transform:translateY(0)}
+.reveal.d1{transition-delay:.1s}.reveal.d2{transition-delay:.2s}
+.reveal.d3{transition-delay:.3s}.reveal.d4{transition-delay:.4s}
+.reveal.from-left{transform:translateX(-32px)}
+.reveal.from-right{transform:translateX(32px)}
+.reveal.from-left.in,.reveal.from-right.in{transform:translateX(0)}
+
+/* ═══ LAYOUT ═══ */
+.wrap{max-width:1380px;margin:0 auto;padding:0 28px}
+section{padding:96px 28px}
+
+/* ═══ BUTTONS ═══ */
+.btn{
+  display:inline-flex;align-items:center;gap:10px;
+  padding:17px 34px;border-radius:50px;
+  font-size:15.5px;font-weight:600;letter-spacing:.1px;
+  transition:var(--t);cursor:pointer;border:none;font-family:var(--f-body);
+}
+.btn-dark{background:var(--ink);color:var(--cream)}
+.btn-dark:hover{background:var(--orange);transform:translateY(-3px);box-shadow:0 12px 32px rgba(196,122,44,.38)}
+.btn-orange{background:var(--orange);color:#fff}
+.btn-orange:hover{background:#a8631e;transform:translateY(-3px);box-shadow:0 12px 30px rgba(196,122,44,.4)}
+.btn-outline{background:transparent;color:var(--ink);border:2px solid rgba(26,26,26,.2)}
+.btn-outline:hover{border-color:var(--orange);color:var(--orange);transform:translateY(-2px)}
+
+/* ═══ EYEBROW ═══ */
+.eyebrow{
+  display:inline-flex;align-items:center;gap:10px;
+  font-size:11px;font-weight:700;letter-spacing:2.5px;
+  text-transform:uppercase;color:var(--orange);margin-bottom:14px;
+}
+.eyebrow::before{content:'';width:28px;height:1.5px;background:var(--orange)}
+h2.display{
+  font-family:var(--f-display);
+  font-size:clamp(36px,4.5vw,58px);
+  font-weight:700;line-height:1.1;letter-spacing:-1.5px;
+  color:var(--ink);margin-bottom:18px;
+}
+.lead{font-size:17px;color:var(--muted);line-height:1.8;max-width:500px}
+
+/* ═══ PROMO BAR ═══ */
+.promo-bar{
+  background:var(--ink);color:#fff;
+  text-align:center;padding:11px 40px;font-size:13px;font-weight:500;
+  display:flex;align-items:center;justify-content:center;gap:8px;position:relative;
+}
+.promo-bar strong{color:var(--gold)}
+.promo-x{position:absolute;right:16px;top:50%;transform:translateY(-50%);color:rgba(255,255,255,.4);font-size:18px;cursor:pointer;line-height:1}
+.promo-x:hover{color:#fff}
+
+/* ═══ HEADER ═══ */
+header{
+  background:rgba(245,245,240,.96);backdrop-filter:blur(24px);
+  border-bottom:1px solid rgba(196,122,44,.12);
+  position:sticky;top:0;z-index:900;
+}
+.nav{
+  max-width:1380px;margin:0 auto;padding:0 28px;
+  height:70px;display:grid;
+  grid-template-columns:1fr auto 1fr;align-items:center;gap:24px;
+}
+.nav-left{display:flex;gap:28px}
+.nav-left a{
+  font-size:13.5px;font-weight:500;color:var(--muted);
+  transition:color var(--t);letter-spacing:.2px;
+  position:relative;padding-bottom:2px;
+}
+.nav-left a::after{content:'';position:absolute;bottom:0;left:0;width:0;height:1px;background:var(--orange);transition:width .28s}
+.nav-left a:hover{color:var(--ink)}
+.nav-left a:hover::after{width:100%}
+
+/* Logo with Kissa */
+.logo-wrap{display:flex;align-items:center;gap:10px;cursor:pointer}
+.logo-kissa-mini{width:40px;height:40px;flex-shrink:0}
+.logo-text{display:flex;flex-direction:column;line-height:1}
+.logo-main{font-family:var(--f-display);font-size:22px;font-weight:700;color:var(--ink);letter-spacing:-.5px}
+.logo-sub{font-size:10px;font-weight:600;color:var(--orange);letter-spacing:1px;text-transform:uppercase}
+
+.nav-right{display:flex;align-items:center;justify-content:flex-end;gap:16px}
+.nav-icon{font-size:19px;color:var(--ink);transition:var(--t);padding:4px;position:relative}
+.nav-icon:hover{color:var(--orange);transform:scale(1.12)}
+.cart-dot{
+  position:absolute;top:-2px;right:-4px;
+  width:16px;height:16px;background:var(--accent);color:#fff;
+  font-size:9px;font-weight:700;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  border:2px solid var(--cream);
+}
+.nav-cta{
+  background:var(--ink);color:var(--cream);
+  padding:10px 20px;border-radius:50px;font-size:13px;font-weight:600;
+  transition:var(--t);
+}
+.nav-cta:hover{background:var(--orange);transform:translateY(-1px)}
+
+/* ═══ HERO ═══ */
+.hero{
+  min-height:92vh;
+  background:linear-gradient(150deg, var(--cream) 0%, var(--beige) 55%, var(--sand) 100%);
+  display:flex;align-items:center;
+  padding:80px 28px 60px;position:relative;overflow:hidden;
+}
+.hero::before{
+  content:'';position:absolute;
+  top:-120px;right:-150px;width:650px;height:650px;
+  background:radial-gradient(circle,rgba(196,122,44,.12) 0%,transparent 65%);
+  border-radius:50%;pointer-events:none;
+}
+.hero::after{
+  content:'';position:absolute;
+  bottom:-80px;left:-80px;width:400px;height:400px;
+  background:radial-gradient(circle,rgba(212,116,90,.08) 0%,transparent 65%);
+  border-radius:50%;pointer-events:none;
+}
+.hero-inner{
+  max-width:1380px;margin:0 auto;width:100%;
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:60px;align-items:center;position:relative;z-index:1;
+}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:9px;
+  background:var(--white);border:1px solid rgba(196,122,44,.25);
+  border-radius:50px;padding:8px 16px;margin-bottom:28px;
+  font-size:12.5px;font-weight:600;color:var(--orange);
+  box-shadow:var(--sh);animation:fadeUp .9s var(--ease) both;
+}
+.hero-title{
+  font-family:var(--f-display);
+  font-size:clamp(50px,7vw,86px);
+  font-weight:700;line-height:1.05;letter-spacing:-3px;
+  color:var(--ink);margin-bottom:14px;
+  animation:fadeUp .9s .1s var(--ease) both;
+}
+.hero-title em{font-style:italic;color:var(--orange)}
+.hero-ceo-line{
+  font-size:16px;font-weight:500;color:var(--muted);
+  margin-bottom:28px;letter-spacing:.2px;font-style:italic;
+  animation:fadeUp .9s .18s var(--ease) both;
+}
+.hero-sub{
+  font-size:17.5px;color:var(--muted);line-height:1.75;
+  max-width:440px;margin-bottom:40px;
+  animation:fadeUp .9s .22s var(--ease) both;
+}
+.hero-btns{
+  display:flex;gap:14px;flex-wrap:wrap;
+  animation:fadeUp .9s .3s var(--ease) both;
+}
+.hero-trust{
+  display:flex;flex-wrap:wrap;gap:22px;
+  margin-top:40px;padding-top:36px;
+  border-top:1px solid rgba(196,122,44,.18);
+  animation:fadeUp .9s .4s var(--ease) both;
+}
+.htrust{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);font-weight:500}
+.htrust span{font-size:17px}
+
+/* Hero Kissa visual */
+.hero-kissa{
+  display:flex;flex-direction:column;align-items:center;
+  position:relative;
+  animation:fadeUp .9s .2s var(--ease) both;
+}
+.kissa-hero-wrap{
+  position:relative;
+  animation:kissaFloat 4s ease-in-out infinite;
+}
+@keyframes kissaFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+.kissa-glow{
+  position:absolute;bottom:-20px;left:50%;transform:translateX(-50%);
+  width:200px;height:30px;
+  background:radial-gradient(ellipse,rgba(196,122,44,.25) 0%,transparent 70%);
+  border-radius:50%;
+  animation:glowPulse 4s ease-in-out infinite;
+}
+@keyframes glowPulse{0%,100%{opacity:.8;transform:translateX(-50%) scaleX(1)}50%{opacity:.4;transform:translateX(-50%) scaleX(.8)}}
+
+/* CEO badge */
+.ceo-badge{
+  position:absolute;top:-16px;right:-10px;
+  background:var(--ink);color:var(--gold);
+  font-size:11px;font-weight:700;letter-spacing:.5px;
+  padding:7px 14px;border-radius:50px;
+  box-shadow:var(--sh-md);
+  display:flex;align-items:center;gap:6px;
+  animation:badgePop .6s .8s var(--ease) both;
+  white-space:nowrap;
+}
+@keyframes badgePop{from{opacity:0;transform:scale(.8) translateY(-8px)}to{opacity:1;transform:scale(1) translateY(0)}}
+
+/* Floating product cards around Kissa */
+.product-float{
+  position:absolute;background:var(--white);border-radius:16px;
+  padding:12px 16px;box-shadow:var(--sh-lg);
+  display:flex;align-items:center;gap:10px;
+  animation:fltCard 3.5s ease-in-out infinite;
+  font-size:13px;font-weight:600;color:var(--ink);
+}
+.product-float.pf1{bottom:20px;left:-40px;animation-delay:0s}
+.product-float.pf2{top:60px;right:-30px;animation-delay:1.2s}
+.product-float.pf3{bottom:100px;right:-40px;animation-delay:2.1s}
+@keyframes fltCard{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.pf-icon{font-size:28px}
+.pf-text small{display:block;font-size:10.5px;color:var(--muted);font-weight:400;margin-top:1px}
+
+/* ═══ APPROVED BADGE ═══ */
+.kissa-approved{
+  display:inline-flex;align-items:center;gap:7px;
+  background:rgba(196,122,44,.1);border:1px solid rgba(196,122,44,.3);
+  border-radius:50px;padding:5px 12px 5px 6px;
+  font-size:12px;font-weight:700;color:var(--orange);
+}
+.kissa-approved .mini-kissa{width:24px;height:24px}
+
+/* ═══ STATS ═══ */
+.stats-bar{background:var(--ink);padding:26px 28px}
+.stats-grid{max-width:1380px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:16px;text-align:center}
+.stat-val{font-family:var(--f-display);font-size:34px;font-weight:700;color:var(--gold);display:block;line-height:1}
+.stat-lbl{font-size:12.5px;color:rgba(245,245,240,.5);margin-top:6px;letter-spacing:.3px}
+
+/* ═══ TRUST BAND ═══ */
+.trust-band{background:var(--white);padding:26px 28px;border-bottom:1px solid rgba(196,122,44,.1)}
+.tbgrid{max-width:1380px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:24px}
+.tbadge{display:flex;align-items:center;gap:14px}
+.tbadge-icon{width:46px;height:46px;background:var(--beige);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:21px;flex-shrink:0}
+.tbadge strong{display:block;font-size:14px;font-weight:600;color:var(--ink);margin-bottom:2px}
+.tbadge span{font-size:12px;color:var(--muted)}
+
+/* ═══ OFFER STRIP ═══ */
+.offer-strip{background:linear-gradient(90deg,var(--orange),#a8631e);padding:20px 28px}
+.offer-inner{max-width:1380px;margin:0 auto;display:flex;align-items:center;justify-content:center;gap:32px;flex-wrap:wrap}
+.offer-inner h3{font-family:var(--f-display);font-size:26px;color:#fff;font-weight:700;letter-spacing:-.3px}
+.offer-inner p{font-size:13.5px;color:rgba(255,255,255,.75);margin-top:2px}
+.offer-code{background:rgba(255,255,255,.15);color:#fff;border:1.5px dashed rgba(255,255,255,.5);padding:10px 22px;border-radius:10px;font-size:14px;font-weight:700;letter-spacing:2px}
+.offer-cta{background:#fff;color:#a8631e;padding:12px 24px;border-radius:50px;font-size:14px;font-weight:700;transition:var(--t);cursor:pointer;border:none;font-family:var(--f-body)}
+.offer-cta:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(0,0,0,.15)}
+
+/* ═══ HOW IT WORKS ═══ */
+.how-section{background:var(--beige)}
+.how-header{text-align:center;margin-bottom:72px}
+.how-header .lead{margin:0 auto}
+.steps-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;position:relative}
+.steps-grid::before{content:'';position:absolute;top:52px;left:calc(16.6% + 26px);right:calc(16.6% + 26px);height:2px;background:repeating-linear-gradient(90deg,var(--sand) 0,var(--sand) 8px,transparent 8px,transparent 16px)}
+.step-card{background:var(--white);border-radius:24px;padding:44px 32px 36px;text-align:center;box-shadow:var(--sh);transition:var(--t)}
+.step-card:hover{transform:translateY(-9px);box-shadow:var(--sh-lg)}
+.step-num{width:76px;height:76px;background:var(--ink);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--f-display);font-size:32px;font-weight:700;color:var(--gold);margin:0 auto 20px;border:5px solid var(--beige);box-shadow:0 0 0 2px var(--orange);position:relative;z-index:1}
+.step-icon{font-size:36px;margin-bottom:16px;display:block}
+.step-title{font-family:var(--f-display);font-size:24px;font-weight:600;color:var(--ink);margin-bottom:12px;letter-spacing:-.3px}
+.step-desc{font-size:15px;color:var(--muted);line-height:1.75}
+
+/* ═══ MEET KISSA SECTION ═══ */
+.meet-section{
+  background:var(--ink);padding:96px 28px;
+  position:relative;overflow:hidden;
+}
+.meet-section::before{
+  content:'';position:absolute;
+  top:-200px;left:-200px;width:600px;height:600px;
+  background:radial-gradient(circle,rgba(196,122,44,.12) 0%,transparent 65%);
+  border-radius:50%;pointer-events:none;
+}
+.meet-section::after{
+  content:'';position:absolute;
+  bottom:-150px;right:-150px;width:500px;height:500px;
+  background:radial-gradient(circle,rgba(196,122,44,.08) 0%,transparent 65%);
+  border-radius:50%;pointer-events:none;
+}
+.meet-inner{
+  max-width:1380px;margin:0 auto;
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:80px;align-items:center;position:relative;z-index:1;
+}
+.meet-kissa-wrap{
+  display:flex;justify-content:center;position:relative;
+}
+.meet-kissa-bg{
+  width:360px;height:360px;border-radius:50%;
+  background:radial-gradient(circle,rgba(196,122,44,.15) 30%,transparent 70%);
+  display:flex;align-items:center;justify-content:center;
+  position:relative;
+}
+.meet-kissa-ring{
+  position:absolute;inset:-4px;
+  border:2px dashed rgba(196,122,44,.3);
+  border-radius:50%;
+  animation:spin 20s linear infinite;
+}
+@keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+.meet-kissa-bg svg{width:280px;height:auto;filter:drop-shadow(0 20px 40px rgba(196,122,44,.3))}
+
+.meet-text .eyebrow{color:var(--gold)}
+.meet-text .eyebrow::before{background:var(--gold)}
+.meet-text h2{color:var(--cream)}
+.meet-speech{
+  background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);
+  border-radius:20px;padding:28px 32px;margin:28px 0 32px;position:relative;
+}
+.meet-speech::before{
+  content:'';position:absolute;
+  top:-12px;left:36px;
+  border:12px solid transparent;
+  border-bottom:0;border-top:12px solid rgba(255,255,255,.1);
+}
+.meet-speech p{font-size:18px;color:rgba(245,245,240,.9);line-height:1.75;font-family:var(--f-display);font-style:italic}
+.meet-speech cite{display:block;margin-top:14px;font-size:13px;color:var(--gold);font-style:normal;font-weight:600;font-family:var(--f-body)}
+.meet-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:32px}
+.meet-stat{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:18px;text-align:center}
+.meet-stat-num{font-family:var(--f-display);font-size:28px;font-weight:700;color:var(--gold);display:block;line-height:1}
+.meet-stat-lbl{font-size:12px;color:rgba(245,245,240,.4);margin-top:5px;letter-spacing:.3px}
+
+/* ═══ BESTSELLERS ═══ */
+.products-section{background:var(--cream)}
+.products-header{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:56px;gap:20px}
+.products-grid{display:grid;grid-template-columns:1.6fr 1fr 1fr;gap:22px}
+.pcard{background:var(--white);border-radius:22px;overflow:hidden;box-shadow:var(--sh);transition:var(--t);cursor:pointer;position:relative}
+.pcard:hover{transform:translateY(-8px);box-shadow:var(--sh-lg)}
+.pcard-badge{position:absolute;top:14px;left:14px;padding:5px 12px;border-radius:50px;font-size:11px;font-weight:700;letter-spacing:.3px;text-transform:uppercase;z-index:3}
+.badge-ink{background:var(--ink);color:var(--gold)}
+.badge-hot{background:var(--accent);color:#fff}
+.badge-new{background:var(--green);color:#fff}
+.pcard-wish{position:absolute;top:14px;right:14px;width:36px;height:36px;background:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:17px;z-index:3;box-shadow:var(--sh);transition:var(--t)}
+.pcard-wish:hover{transform:scale(1.15)}
+
+/* Kissa Approved badge on products */
+.kissa-stamp{
+  position:absolute;bottom:14px;left:14px;
+  background:rgba(255,255,255,.95);backdrop-filter:blur(8px);
+  border-radius:50px;padding:5px 10px 5px 5px;
+  display:flex;align-items:center;gap:6px;z-index:3;
+  font-size:11px;font-weight:700;color:var(--orange);
+  box-shadow:var(--sh);opacity:0;transform:translateY(4px);
+  transition:opacity .3s,transform .3s;
+}
+.pcard:hover .kissa-stamp{opacity:1;transform:translateY(0)}
+.kissa-stamp .ks-mini{width:22px;height:22px}
+
+.pcard-visual{position:relative;overflow:hidden;transition:var(--t)}
+.pcard.featured .pcard-visual{height:380px}
+.pcard:not(.featured) .pcard-visual{height:220px}
+.visual-bg{width:100%;height:100%;display:flex;align-items:center;justify-content:center;transition:transform .5s var(--ease)}
+.pcard:hover .visual-bg{transform:scale(1.04)}
+
+/* CSS Product Mockups */
+.pc-tshirt-wrap{width:100%;height:100%;background:var(--beige);display:flex;align-items:center;justify-content:center;padding:28px}
+.pc-tshirt{position:relative;width:170px;filter:drop-shadow(0 10px 28px rgba(0,0,0,.13))}
+.pct-body{width:170px;height:200px;background:#fff;border-radius:4px 4px 14px 14px;clip-path:polygon(20% 0%,80% 0%,100% 14%,88% 14%,88% 100%,12% 100%,12% 14%,0% 14%);display:flex;align-items:center;justify-content:center;position:relative}
+.pct-neck{position:absolute;top:0;left:20%;width:60%;height:14%;background:#ececec;border-radius:0 0 50% 50%}
+.pct-cat{font-size:72px;padding-top:12px;line-height:1;z-index:1}
+.pc-mug-wrap{width:100%;height:100%;background:#EDE3D8;display:flex;align-items:center;justify-content:center}
+.pc-mug{position:relative;display:inline-block}
+.pc-mug-body{width:90px;height:105px;background:#fff;border-radius:6px 6px 12px 12px;border:3px solid #ddd;display:flex;align-items:center;justify-content:center;font-size:44px;box-shadow:0 6px 20px rgba(0,0,0,.1)}
+.pc-mug-handle{position:absolute;right:-22px;top:22px;width:22px;height:42px;border:4px solid #ddd;border-left:none;border-radius:0 14px 14px 0}
+.pc-hoodie-wrap{width:100%;height:100%;background:#E5DDD3;display:flex;align-items:center;justify-content:center}
+.pc-hoodie-emoji{font-size:56px;filter:drop-shadow(0 4px 8px rgba(0,0,0,.1))}
+
+.quick-add-overlay{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent 0%,rgba(26,26,26,.7) 100%);padding:40px 16px 16px;opacity:0;transform:translateY(4px);transition:opacity .3s,transform .3s;z-index:2}
+.pcard:hover .quick-add-overlay{opacity:1;transform:translateY(0)}
+.quick-add-btn{width:100%;background:#fff;color:var(--ink);border:none;padding:13px;border-radius:50px;font-size:14px;font-weight:600;cursor:pointer;font-family:var(--f-body);transition:var(--t)}
+.quick-add-btn:hover{background:var(--orange);color:#fff}
+
+.pcard-info{padding:18px 22px 22px}
+.pcard-name{font-family:var(--f-display);font-size:19px;font-weight:600;color:var(--ink);margin-bottom:8px;line-height:1.3}
+.pcard:not(.featured) .pcard-name{font-size:16px}
+.pcard-stars{display:flex;align-items:center;gap:6px;margin-bottom:12px}
+.pcard-stars .s{color:var(--gold);font-size:13px}
+.pcard-stars .cnt{font-size:12px;color:var(--muted)}
+.pcard-price{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.price-now{font-size:20px;font-weight:700;color:var(--ink)}
+.pcard:not(.featured) .price-now{font-size:17px}
+.price-was{font-size:13px;color:var(--muted);text-decoration:line-through}
+.price-tag{font-size:11.5px;font-weight:600;color:var(--accent);background:rgba(212,116,90,.1);padding:3px 9px;border-radius:50px}
+
+/* ═══ REVIEWS ═══ */
+.reviews-section{background:var(--beige)}
+.rating-hero{display:inline-flex;align-items:center;gap:24px;background:var(--white);padding:22px 32px;border-radius:20px;box-shadow:var(--sh);margin-bottom:52px}
+.rating-num{font-family:var(--f-display);font-size:72px;font-weight:700;color:var(--ink);line-height:1}
+.stars-row{display:flex;gap:3px}
+.stars-row span{color:var(--gold);font-size:22px}
+.rating-sub{font-size:13.5px;color:var(--muted);margin-top:6px}
+.reviews-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.rcard{background:var(--white);border-radius:22px;padding:28px;box-shadow:var(--sh);transition:var(--t);border:1.5px solid transparent}
+.rcard:hover{transform:translateY(-5px);box-shadow:var(--sh-md);border-color:rgba(196,122,44,.2)}
+.rcard-head{display:flex;align-items:center;gap:14px;margin-bottom:16px}
+.rcard-av{width:50px;height:50px;border-radius:50%;background:var(--beige);display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0}
+.rcard-name{font-weight:600;font-size:15px;color:var(--ink)}
+.rcard-loc{font-size:12px;color:var(--orange);font-weight:500;margin-top:1px}
+.rcard-stars{display:flex;gap:2px}
+.rcard-stars span{color:var(--gold);font-size:14px}
+.rcard-text{font-size:14.5px;line-height:1.75;color:var(--muted);margin-bottom:18px}
+.rcard-photo{width:100%;height:145px;background:var(--beige);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:60px;margin-bottom:12px}
+.rcard-verified{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;color:var(--green);font-weight:600}
+
+/* ═══ CATEGORIES ═══ */
+.cat-section{background:var(--cream)}
+.cat-header{text-align:center;margin-bottom:60px}
+.cat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+.cat-card{background:var(--white);border-radius:22px;padding:38px 24px 32px;text-align:center;box-shadow:var(--sh);transition:var(--t);cursor:pointer;border:2px solid transparent}
+.cat-card:hover{border-color:var(--orange);transform:translateY(-7px);box-shadow:var(--sh-md)}
+.cat-icon{font-size:52px;margin-bottom:18px;display:block}
+.cat-name{font-family:var(--f-display);font-size:22px;font-weight:600;color:var(--ink);margin-bottom:6px}
+.cat-count{font-size:13px;color:var(--muted);margin-bottom:18px}
+.cat-arrow{display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;background:var(--beige);border-radius:50%;font-size:16px;transition:var(--t)}
+.cat-card:hover .cat-arrow{background:var(--orange);color:#fff;transform:translateX(4px)}
+
+/* ═══ URGENCY ═══ */
+.urgency-section{background:var(--ink);padding:88px 28px;position:relative;overflow:hidden}
+.urg-inner{max-width:1380px;margin:0 auto;display:grid;grid-template-columns:1fr auto;gap:72px;align-items:center}
+.urg-eyebrow{display:inline-flex;align-items:center;gap:10px;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:14px}
+.pulse{width:8px;height:8px;background:var(--gold);border-radius:50%;animation:pulse 1.6s ease-in-out infinite}
+@keyframes pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.7);opacity:.4}}
+.urgency-title{font-family:var(--f-display);font-size:clamp(34px,4.5vw,58px);color:#fff;font-weight:700;letter-spacing:-2px;margin-bottom:16px;line-height:1.1}
+.urgency-sub{font-size:16px;color:rgba(245,245,240,.55);line-height:1.75;margin-bottom:36px;max-width:420px}
+.countdown{display:flex;gap:14px;margin-bottom:36px}
+.cd-unit{text-align:center;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:16px 22px;min-width:82px}
+.cd-num{font-family:var(--f-display);font-size:42px;font-weight:700;color:var(--gold);line-height:1;display:block}
+.cd-lbl{font-size:10.5px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(245,245,240,.4);margin-top:6px;display:block}
+.drops-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;width:530px}
+.drop-card{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:20px;text-align:center;transition:var(--t);cursor:pointer}
+.drop-card:hover{background:rgba(255,255,255,.1);border-color:var(--orange)}
+.drop-img{font-size:46px;display:block;margin-bottom:10px}
+.drop-name{font-size:13px;color:#fff;font-weight:500;margin-bottom:6px}
+.drop-left{font-size:11px;color:var(--accent);font-weight:700;display:flex;align-items:center;justify-content:center;gap:4px}
+.drop-bar{width:100%;height:4px;background:rgba(255,255,255,.1);border-radius:2px;margin-top:8px;overflow:hidden}
+.drop-fill{height:100%;background:var(--accent);border-radius:2px}
+
+/* ═══ BUNDLE ═══ */
+.bundle-section{background:var(--white);padding:80px 28px}
+.bundle-inner{max-width:1380px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center}
+.bundle-visual{background:var(--beige);border-radius:28px;padding:48px 40px;display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap}
+.bundle-item{display:flex;flex-direction:column;align-items:center;gap:8px;background:var(--white);border-radius:16px;padding:20px 18px;box-shadow:var(--sh);transition:var(--t)}
+.bundle-item:hover{transform:translateY(-4px)}
+.bundle-item span:first-child{font-size:48px}
+.bundle-item-name{font-size:12px;font-weight:600;color:var(--ink)}
+.bundle-item-price{font-size:13px;color:var(--orange);font-weight:600}
+.bundle-plus{font-size:24px;color:var(--muted);font-weight:300}
+.bundle-offer{background:linear-gradient(135deg,var(--orange),#a8631e);color:#fff;border-radius:20px;padding:20px 24px;margin:24px 0;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.bundle-offer-l strong{font-family:var(--f-display);font-size:22px;font-weight:700}
+.bundle-offer-l p{font-size:13px;opacity:.8;margin-top:2px}
+.bundle-save{font-family:var(--f-display);font-size:32px;font-weight:700;background:rgba(255,255,255,.2);padding:8px 16px;border-radius:12px}
+
+/* ═══ EMAIL ═══ */
+.email-section{background:linear-gradient(140deg,var(--beige) 0%,var(--sand) 100%);padding:100px 28px;text-align:center;position:relative;overflow:hidden}
+.email-section::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 80% at 50% 50%,rgba(196,122,44,.1) 0%,transparent 70%);pointer-events:none}
+.email-inner{max-width:640px;margin:0 auto;position:relative}
+.email-form{display:flex;gap:0;margin-top:40px;background:var(--white);border-radius:60px;box-shadow:var(--sh-lg);border:2px solid transparent;overflow:hidden;transition:border-color .3s}
+.email-form:focus-within{border-color:var(--orange)}
+.email-input{flex:1;border:none;background:transparent;font-family:var(--f-body);font-size:15px;color:var(--ink);outline:none;padding:18px 24px}
+.email-input::placeholder{color:rgba(122,112,104,.5)}
+.email-btn{background:var(--ink);color:#fff;border:none;padding:14px 28px;margin:6px;border-radius:50px;font-family:var(--f-body);font-size:14px;font-weight:600;cursor:pointer;transition:var(--t);white-space:nowrap}
+.email-btn:hover{background:var(--orange)}
+
+/* ═══ STICKY BAR ═══ */
+.sticky-bar{position:fixed;bottom:0;left:0;right:0;background:rgba(245,245,240,.97);backdrop-filter:blur(20px);border-top:1px solid rgba(196,122,44,.15);padding:14px 28px;z-index:800;box-shadow:0 -8px 32px rgba(26,26,26,.09);transform:translateY(100%);opacity:0;transition:transform .4s var(--ease),opacity .4s}
+.sticky-bar.visible{transform:translateY(0);opacity:1}
+.sticky-inner{max-width:1380px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.sticky-product{display:flex;align-items:center;gap:14px}
+.sticky-thumb{width:48px;height:48px;background:var(--beige);border-radius:10px;font-size:26px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.sticky-name{font-weight:600;font-size:15px}
+.sticky-meta{font-size:12.5px;color:var(--muted);margin-top:1px}
+.sticky-price{font-family:var(--f-display);font-size:24px;font-weight:700}
+
+/* ═══ MODAL ═══ */
+.overlay{position:fixed;inset:0;background:rgba(26,26,26,.65);backdrop-filter:blur(10px);z-index:2000;display:none;align-items:center;justify-content:center;padding:20px}
+.overlay.open{display:flex}
+.modal{background:var(--white);border-radius:28px;max-width:880px;width:100%;max-height:92vh;overflow-y:auto;box-shadow:0 32px 80px rgba(26,26,26,.3);animation:modalPop .4s cubic-bezier(.34,1.56,.64,1) both}
+@keyframes modalPop{from{opacity:0;transform:scale(.92) translateY(16px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.modal-layout{display:grid;grid-template-columns:1fr 1fr}
+.modal-left{background:var(--beige);border-radius:28px 0 0 28px;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:480px;position:relative;padding:40px}
+.modal-close{position:absolute;top:14px;right:14px;width:38px;height:38px;background:#fff;border:none;border-radius:50%;font-size:17px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:var(--sh);transition:var(--t)}
+.modal-close:hover{transform:scale(1.1);background:var(--accent);color:#fff}
+.modal-right{padding:36px 40px;overflow-y:auto}
+.modal-tag{font-size:11px;font-weight:700;color:var(--orange);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px}
+.modal-title{font-family:var(--f-display);font-size:30px;font-weight:700;color:var(--ink);margin-bottom:10px;letter-spacing:-.5px;line-height:1.2}
+.modal-stars{display:flex;align-items:center;gap:8px;margin-bottom:20px;font-size:13.5px;color:var(--muted)}
+.modal-price{display:flex;align-items:baseline;gap:12px;margin-bottom:26px}
+.modal-price-now{font-family:var(--f-display);font-size:36px;font-weight:700;color:var(--ink)}
+.modal-price-was{font-size:17px;text-decoration:line-through;color:var(--muted)}
+.modal-price-save{font-size:13px;font-weight:600;color:var(--accent);background:rgba(212,116,90,.1);padding:3px 10px;border-radius:50px}
+.modal-label{font-size:12px;font-weight:700;color:var(--ink);letter-spacing:.5px;text-transform:uppercase;margin-bottom:10px}
+.upload-zone{border:2px dashed rgba(196,122,44,.35);border-radius:14px;padding:22px;text-align:center;cursor:pointer;background:var(--cream);margin-bottom:22px;transition:var(--t)}
+.upload-zone:hover{border-color:var(--orange);background:var(--beige)}
+.upload-zone .up-icon{font-size:32px;margin-bottom:8px;display:block}
+.upload-zone p{font-size:13.5px;color:var(--muted)}
+.upload-zone strong{color:var(--orange)}
+.sizes{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:22px}
+.sz{padding:8px 17px;border:2px solid rgba(196,122,44,.25);border-radius:50px;font-size:13px;font-weight:500;background:transparent;color:var(--ink);cursor:pointer;font-family:var(--f-body);transition:var(--t)}
+.sz:hover,.sz.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.colors{display:flex;gap:10px;margin-bottom:26px}
+.cl{width:30px;height:30px;border-radius:50%;cursor:pointer;border:3px solid transparent;transition:transform .25s,border-color .25s}
+.cl:hover,.cl.on{transform:scale(1.25);border-color:var(--ink)}
+.delivery-note{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--green);font-weight:500;background:rgba(61,122,85,.08);padding:10px 14px;border-radius:10px;margin-bottom:18px}
+.modal-atc{width:100%;background:var(--ink);color:#fff;border:none;padding:17px;border-radius:50px;font-size:16px;font-weight:600;cursor:pointer;font-family:var(--f-body);transition:var(--t);display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:14px}
+.modal-atc:hover{background:var(--orange);transform:translateY(-2px)}
+.fbt{border-top:1px solid var(--beige);padding-top:22px;margin-top:8px}
+.fbt-items{display:flex;align-items:center;gap:8px;margin:14px 0;flex-wrap:wrap}
+.fbt-product{background:var(--beige);border-radius:12px;padding:10px 14px;display:flex;flex-direction:column;align-items:center;gap:4px}
+.fbt-product span:first-child{font-size:26px}
+.fbt-product p{font-size:11px;color:var(--muted);text-align:center}
+.fbt-plus{font-size:18px;color:var(--muted)}
+.fbt-deal{font-size:13px;color:var(--green);font-weight:600;margin-bottom:12px}
+
+/* ═══ POPUP ═══ */
+.popup-overlay{position:fixed;inset:0;background:rgba(26,26,26,.7);backdrop-filter:blur(10px);z-index:3000;display:none;align-items:center;justify-content:center;padding:20px}
+.popup-overlay.open{display:flex}
+.popup{background:var(--white);border-radius:28px;max-width:500px;width:100%;overflow:hidden;box-shadow:0 40px 100px rgba(26,26,26,.35);animation:modalPop .45s cubic-bezier(.34,1.56,.64,1) both}
+.popup-top{background:linear-gradient(135deg,var(--beige) 0%,var(--sand) 100%);padding:44px 40px 32px;text-align:center;position:relative}
+.popup-top .big-emoji{font-size:72px;display:block;margin-bottom:16px}
+.popup-top h2{font-family:var(--f-display);font-size:36px;font-weight:700;color:var(--ink);letter-spacing:-1px;margin-bottom:10px}
+.popup-top p{font-size:15px;color:var(--muted);line-height:1.65}
+.popup-x{position:absolute;top:14px;right:14px;width:34px;height:34px;background:rgba(26,26,26,.08);border:none;border-radius:50%;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:var(--t)}
+.popup-x:hover{background:var(--accent);color:#fff}
+.popup-bottom{padding:32px 40px}
+.popup-discount{display:inline-block;background:var(--ink);color:var(--gold);font-size:40px;font-weight:800;font-family:var(--f-display);padding:12px 28px;border-radius:16px;margin-bottom:20px;letter-spacing:-1px}
+.popup-form{display:flex;flex-direction:column;gap:12px}
+.popup-input{border:2px solid rgba(196,122,44,.25);border-radius:50px;padding:15px 22px;font-family:var(--f-body);font-size:15px;color:var(--ink);outline:none;transition:border-color .3s;background:var(--cream)}
+.popup-input:focus{border-color:var(--orange)}
+.popup-submit{background:var(--orange);color:#fff;border:none;padding:16px;border-radius:50px;font-family:var(--f-body);font-size:16px;font-weight:700;cursor:pointer;transition:var(--t)}
+.popup-submit:hover{background:#a8631e;transform:translateY(-2px)}
+.popup-skip{text-align:center;margin-top:14px;font-size:13px;color:var(--muted);cursor:pointer;transition:color .2s}
+.popup-skip:hover{color:var(--ink)}
+
+/* ═══ CHAT WIDGET ═══ */
+.chat-widget{position:fixed;bottom:90px;right:24px;z-index:799;display:flex;flex-direction:column;align-items:flex-end;gap:12px}
+.chat-hint{background:var(--white);border-radius:16px 16px 4px 16px;padding:12px 16px;font-size:13px;font-weight:500;color:var(--ink);box-shadow:var(--sh-md);max-width:190px;text-align:right;animation:fadeIn .5s 3s both}
+.chat-btn{width:58px;height:58px;background:var(--ink);border-radius:50%;border:none;cursor:pointer;font-size:24px;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 24px rgba(26,26,26,.3);transition:var(--t);position:relative}
+.chat-btn:hover{transform:scale(1.1);background:var(--orange)}
+.chat-btn::after{content:'';position:absolute;top:-1px;right:-1px;width:14px;height:14px;background:var(--green);border-radius:50%;border:2.5px solid var(--cream)}
+
+/* ═══ FOOTER ═══ */
+footer{background:var(--ink);color:rgba(245,245,240,.6);padding:72px 28px 32px}
+.footer-inner{max-width:1380px;margin:0 auto}
+.footer-grid{display:grid;grid-template-columns:2.2fr 1fr 1fr 1fr;gap:56px;margin-bottom:56px}
+.footer-brand .logo-wrap{margin-bottom:16px}
+.footer-brand .logo-main{color:var(--cream)}
+.footer-brand p{font-size:14px;line-height:1.85;max-width:270px}
+.footer-social{display:flex;gap:10px;margin-top:24px}
+.f-social{width:40px;height:40px;background:rgba(255,255,255,.07);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;transition:var(--t)}
+.f-social:hover{background:var(--orange);transform:translateY(-2px)}
+.footer-col h5{color:var(--cream);font-size:12.5px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:20px}
+.footer-col ul{list-style:none;display:flex;flex-direction:column;gap:10px}
+.footer-col a{font-size:14px;color:rgba(245,245,240,.42);transition:var(--t)}
+.footer-col a:hover{color:var(--orange);padding-left:5px}
+.footer-bottom{border-top:1px solid rgba(255,255,255,.07);padding-top:28px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap}
+.footer-bottom p{font-size:13px;opacity:.35}
+.footer-kissa{width:48px;height:48px;opacity:.5;transition:opacity .3s}
+.footer-kissa:hover{opacity:1}
+
+/* ═══ ANIMATIONS ═══ */
+@keyframes fadeUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+/* ═══ RESPONSIVE ═══ */
+@media(max-width:1100px){
+  .hero-inner,.meet-inner,.bundle-inner{grid-template-columns:1fr;gap:48px}
+  .hero-visual,.meet-kissa-wrap{order:-1}
+  .products-grid{grid-template-columns:1fr 1fr}
+  .pcard.featured{grid-column:span 2}
+  .pcard.featured .pcard-visual{height:280px}
+  .urg-inner{grid-template-columns:1fr}
+  .drops-grid{width:100%}
+  .footer-grid{grid-template-columns:1fr 1fr;gap:40px}
+  .modal-layout{grid-template-columns:1fr}
+  .modal-left{border-radius:28px 28px 0 0;min-height:280px}
+}
+@media(max-width:768px){
+  section{padding:72px 20px}
+  .nav{padding:0 20px}.nav-left{display:none}
+  .stats-grid,.tbgrid{grid-template-columns:repeat(2,1fr)}
+  .steps-grid,.reviews-grid{grid-template-columns:1fr}
+  .steps-grid::before{display:none}
+  .products-grid{grid-template-columns:1fr}
+  .pcard.featured{grid-column:auto}
+  .cat-grid{grid-template-columns:repeat(2,1fr)}
+  .drops-grid{grid-template-columns:repeat(2,1fr)}
+  .footer-grid{grid-template-columns:1fr;gap:30px}
+  .products-header{flex-direction:column;align-items:flex-start}
+  .email-form{flex-direction:column;border-radius:20px}
+  .email-btn{margin:0 6px 6px;padding:15px}
+  .offer-inner{flex-direction:column;gap:16px;text-align:center}
+  .hero-title{letter-spacing:-2px}
+  .hero-trust{flex-direction:column;align-items:flex-start;gap:12px}
+  .bundle-visual{flex-direction:column;align-items:center}
+  .meet-kissa-bg{width:280px;height:280px}
+  .meet-kissa-bg svg{width:210px}
+  .popup-top,.popup-bottom{padding:28px 24px}
+  .countdown{gap:8px}
+  .cd-unit{min-width:66px;padding:12px 14px}
+  .cd-num{font-size:32px}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════
+     KISSA SVG DEFINITIONS (reusable)
+════════════════════════════════════════ -->
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+  <defs>
+    <!-- Full Kissa Mascot -->
+    <symbol id="kissa-full" viewBox="0 0 220 300">
+      <!-- Shadow -->
+      <ellipse cx="110" cy="288" rx="55" ry="11" fill="rgba(26,26,26,0.1)"/>
+
+      <!-- TAIL -->
+      <path d="M125 238 Q168 258 172 225 Q176 198 150 210" fill="none" stroke="#1A1A1A" stroke-width="16" stroke-linecap="round"/>
+      <path d="M150 210 Q143 200 146 192" fill="none" stroke="#F5F5F0" stroke-width="13" stroke-linecap="round"/>
+      <!-- Tail orange patch -->
+      <path d="M125 238 Q155 250 165 232 Q170 218 156 222" fill="none" stroke="#C47A2C" stroke-width="8" stroke-linecap="round" opacity="0.7"/>
+
+      <!-- BODY BASE -->
+      <ellipse cx="110" cy="215" rx="58" ry="68" fill="#1A1A1A"/>
+      <!-- Body orange left patch -->
+      <ellipse cx="88" cy="203" rx="34" ry="42" fill="#C47A2C"/>
+      <!-- Body white chest -->
+      <ellipse cx="110" cy="218" rx="30" ry="52" fill="#F5F5F0"/>
+      <!-- Body outline softness -->
+      <ellipse cx="110" cy="215" rx="58" ry="68" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="2"/>
+
+      <!-- NECK -->
+      <rect x="85" y="143" width="50" height="32" rx="24" fill="#1A1A1A"/>
+      <rect x="93" y="143" width="32" height="32" rx="16" fill="#F5F5F0"/>
+
+      <!-- PAWS -->
+      <ellipse cx="83" cy="272" rx="20" ry="13" fill="#F5F5F0"/>
+      <ellipse cx="137" cy="272" rx="20" ry="13" fill="#F5F5F0"/>
+      <!-- Toe details left -->
+      <line x1="75" y1="268" x2="73" y2="278" stroke="#D5CFC8" stroke-width="1.8" stroke-linecap="round"/>
+      <line x1="83" y1="267" x2="83" y2="278" stroke="#D5CFC8" stroke-width="1.8" stroke-linecap="round"/>
+      <line x1="91" y1="268" x2="93" y2="278" stroke="#D5CFC8" stroke-width="1.8" stroke-linecap="round"/>
+      <!-- Toe details right -->
+      <line x1="129" y1="268" x2="127" y2="278" stroke="#D5CFC8" stroke-width="1.8" stroke-linecap="round"/>
+      <line x1="137" y1="267" x2="137" y2="278" stroke="#D5CFC8" stroke-width="1.8" stroke-linecap="round"/>
+      <line x1="145" y1="268" x2="147" y2="278" stroke="#D5CFC8" stroke-width="1.8" stroke-linecap="round"/>
+
+      <!-- EARS (behind head) -->
+      <!-- Left ear outer - black -->
+      <polygon points="58,54 73,14 94,50" fill="#1A1A1A"/>
+      <!-- Right ear outer - orange -->
+      <polygon points="162,54 147,14 126,50" fill="#C47A2C"/>
+      <!-- Left inner ear -->
+      <polygon points="65,51 75,22 89,47" fill="#E8A0A8"/>
+      <!-- Right inner ear -->
+      <polygon points="155,51 145,22 131,47" fill="#E8A0A8"/>
+
+      <!-- HEAD BASE -->
+      <circle cx="110" cy="90" r="64" fill="#F5F5F0"/>
+
+      <!-- HEAD PATCHES -->
+      <!-- Left black patch -->
+      <path d="M44 90 Q48 48 78 40 Q98 32 100 58 Q96 80 82 97 Q64 106 44 90Z" fill="#1A1A1A"/>
+      <!-- Right orange patch -->
+      <path d="M176 86 Q172 46 143 38 Q124 30 122 56 Q126 78 142 95 Q158 104 176 86Z" fill="#C47A2C"/>
+      <!-- Small black forehead patch -->
+      <ellipse cx="110" cy="46" rx="13" ry="10" fill="#1A1A1A"/>
+      <!-- Small orange cheek right -->
+      <ellipse cx="148" cy="104" rx="10" ry="8" fill="#C47A2C" opacity="0.6"/>
+
+      <!-- WHITE MUZZLE -->
+      <ellipse cx="110" cy="112" rx="28" ry="20" fill="#F5F5F0"/>
+
+      <!-- EYES -->
+      <!-- Left eye white -->
+      <ellipse cx="87" cy="86" rx="13" ry="11" fill="#F5F5F0"/>
+      <!-- Left iris amber -->
+      <ellipse cx="87" cy="86" rx="10" ry="9" fill="#D4A84A"/>
+      <!-- Left pupil (vertical, slightly narrowed = judgy) -->
+      <ellipse cx="87" cy="86" rx="5" ry="8" fill="#1A1A1A"/>
+      <!-- Left pupil highlight -->
+      <ellipse cx="85" cy="83" rx="2.5" ry="2.5" fill="rgba(255,255,255,0.9)"/>
+      <!-- Left judgy eyelid (drooping top lid) -->
+      <path d="M74 81 Q87 76 100 81" fill="rgba(26,26,26,0.85)" />
+      <!-- Clean top lid line -->
+      <path d="M74 81 Q87 76 100 81" fill="none" stroke="#1A1A1A" stroke-width="3" stroke-linecap="round"/>
+      <!-- Left bottom lash suggestion -->
+      <path d="M76 92 Q87 96 98 92" fill="none" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+
+      <!-- Right eye white -->
+      <ellipse cx="133" cy="86" rx="13" ry="11" fill="#F5F5F0"/>
+      <!-- Right iris amber -->
+      <ellipse cx="133" cy="86" rx="10" ry="9" fill="#D4A84A"/>
+      <!-- Right pupil -->
+      <ellipse cx="133" cy="86" rx="5" ry="8" fill="#1A1A1A"/>
+      <!-- Right highlight -->
+      <ellipse cx="131" cy="83" rx="2.5" ry="2.5" fill="rgba(255,255,255,0.9)"/>
+      <!-- Right judgy eyelid -->
+      <path d="M120 81 Q133 76 146 81" fill="rgba(26,26,26,0.85)"/>
+      <path d="M120 81 Q133 76 146 81" fill="none" stroke="#1A1A1A" stroke-width="3" stroke-linecap="round"/>
+      <path d="M122 92 Q133 96 144 92" fill="none" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+
+      <!-- NOSE -->
+      <path d="M105 107 L110 102 L115 107Z" fill="#E8929A"/>
+      <!-- Philtrum -->
+      <line x1="110" y1="107" x2="110" y2="113" stroke="#1A1A1A" stroke-width="1.8"/>
+      <!-- Mouth - subtle, slightly asymmetric smirk -->
+      <path d="M101 114 Q110 120 119 114" fill="none" stroke="#1A1A1A" stroke-width="2" stroke-linecap="round"/>
+      <!-- Tiny smirk lift right side -->
+      <path d="M117 113 Q121 111 122 113" fill="none" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/>
+
+      <!-- WHISKERS left -->
+      <line x1="82" y1="109" x2="48" y2="104" stroke="#1A1A1A" stroke-width="1.3" stroke-linecap="round" opacity="0.55"/>
+      <line x1="82" y1="113" x2="48" y2="113" stroke="#1A1A1A" stroke-width="1.3" stroke-linecap="round" opacity="0.55"/>
+      <line x1="82" y1="117" x2="48" y2="122" stroke="#1A1A1A" stroke-width="1.3" stroke-linecap="round" opacity="0.55"/>
+      <!-- WHISKERS right -->
+      <line x1="138" y1="109" x2="172" y2="104" stroke="#1A1A1A" stroke-width="1.3" stroke-linecap="round" opacity="0.55"/>
+      <line x1="138" y1="113" x2="172" y2="113" stroke="#1A1A1A" stroke-width="1.3" stroke-linecap="round" opacity="0.55"/>
+      <line x1="138" y1="117" x2="172" y2="122" stroke="#1A1A1A" stroke-width="1.3" stroke-linecap="round" opacity="0.55"/>
+
+      <!-- Eyebrow accent marks (very subtle, adds to judgy look) -->
+      <path d="M76 74 Q87 70 98 72" fill="none" stroke="#1A1A1A" stroke-width="2" stroke-linecap="round" opacity="0.35"/>
+      <path d="M122 72 Q133 70 144 74" fill="none" stroke="#1A1A1A" stroke-width="2" stroke-linecap="round" opacity="0.35"/>
+    </symbol>
+
+    <!-- Mini Kissa (just head for badges/logo) -->
+    <symbol id="kissa-mini" viewBox="0 0 80 80">
+      <!-- Head -->
+      <circle cx="40" cy="42" r="30" fill="#F5F5F0"/>
+      <!-- Left black patch -->
+      <path d="M10 42 Q12 22 30 18 Q40 15 40 28 Q38 38 30 46 Q20 52 10 42Z" fill="#1A1A1A"/>
+      <!-- Right orange patch -->
+      <path d="M70 40 Q68 22 52 17 Q42 14 42 27 Q44 37 52 44 Q62 50 70 40Z" fill="#C47A2C"/>
+      <!-- Top black patch -->
+      <ellipse cx="40" cy="18" rx="8" ry="6" fill="#1A1A1A"/>
+      <!-- Left ear black -->
+      <polygon points="16,25 23,6 34,22" fill="#1A1A1A"/>
+      <!-- Right ear orange -->
+      <polygon points="64,25 57,6 46,22" fill="#C47A2C"/>
+      <!-- Inner ears -->
+      <polygon points="19,23 24,9 32,20" fill="#E8A0A8"/>
+      <polygon points="61,23 56,9 48,20" fill="#E8A0A8"/>
+      <!-- Muzzle -->
+      <ellipse cx="40" cy="52" rx="14" ry="10" fill="#F5F5F0"/>
+      <!-- Left eye -->
+      <ellipse cx="31" cy="38" rx="6" ry="5" fill="#F5F5F0"/>
+      <ellipse cx="31" cy="38" rx="4.5" ry="4" fill="#D4A84A"/>
+      <ellipse cx="31" cy="38" rx="2" ry="3.5" fill="#1A1A1A"/>
+      <ellipse cx="30" cy="36.5" rx="1.2" ry="1.2" fill="rgba(255,255,255,0.9)"/>
+      <path d="M25 35 Q31 32 37 35" fill="rgba(26,26,26,0.8)"/>
+      <path d="M25 35 Q31 32 37 35" fill="none" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/>
+      <!-- Right eye -->
+      <ellipse cx="49" cy="38" rx="6" ry="5" fill="#F5F5F0"/>
+      <ellipse cx="49" cy="38" rx="4.5" ry="4" fill="#D4A84A"/>
+      <ellipse cx="49" cy="38" rx="2" ry="3.5" fill="#1A1A1A"/>
+      <ellipse cx="48" cy="36.5" rx="1.2" ry="1.2" fill="rgba(255,255,255,0.9)"/>
+      <path d="M43 35 Q49 32 55 35" fill="rgba(26,26,26,0.8)"/>
+      <path d="M43 35 Q49 32 55 35" fill="none" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round"/>
+      <!-- Nose -->
+      <path d="M37 50 L40 47 L43 50Z" fill="#E8929A"/>
+      <line x1="40" y1="50" x2="40" y2="54" stroke="#1A1A1A" stroke-width="1.2"/>
+      <path d="M35 55 Q40 58 45 55" fill="none" stroke="#1A1A1A" stroke-width="1.3" stroke-linecap="round"/>
+      <!-- Whiskers -->
+      <line x1="26" y1="51" x2="10" y2="48" stroke="#1A1A1A" stroke-width="0.9" opacity="0.5" stroke-linecap="round"/>
+      <line x1="26" y1="53" x2="10" y2="53" stroke="#1A1A1A" stroke-width="0.9" opacity="0.5" stroke-linecap="round"/>
+      <line x1="54" y1="51" x2="70" y2="48" stroke="#1A1A1A" stroke-width="0.9" opacity="0.5" stroke-linecap="round"/>
+      <line x1="54" y1="53" x2="70" y2="53" stroke="#1A1A1A" stroke-width="0.9" opacity="0.5" stroke-linecap="round"/>
+    </symbol>
+  </defs>
+</svg>
+
+<!-- EMAIL POPUP -->
+<div class="popup-overlay" id="popupOverlay">
+  <div class="popup">
+    <div class="popup-top">
+      <button class="popup-x" onclick="closePopup()">✕</button>
+      <span class="big-emoji">
+        <svg class="kissa-svg" width="80" height="80"><use href="#kissa-mini"/></svg>
+      </span>
+      <h2>Kissa Says Get 10% Off</h2>
+      <p>Join 14,000+ cat parents. Exclusive drops, cat content, and your welcome discount are one click away.</p>
+    </div>
+    <div class="popup-bottom">
+      <div class="popup-discount">10% OFF</div>
+      <p style="font-size:14px;color:var(--muted);margin-bottom:20px">Applied instantly at checkout on your first order.</p>
+      <div class="popup-form">
+        <input class="popup-input" type="email" placeholder="Your email address...">
+        <button class="popup-submit" onclick="closePopup()">Claim My Discount 🐾</button>
+      </div>
+      <p class="popup-skip" onclick="closePopup()">No thanks, Kissa is judging me anyway →</p>
+    </div>
+  </div>
+</div>
+
+<!-- PROMO BAR -->
+<div class="promo-bar" id="promoBanner">
+  🎉 <strong>BUY 2 GET 20% OFF</strong> — Code <strong style="background:rgba(255,255,255,.12);padding:2px 8px;border-radius:4px">CRAZY20</strong> · Free shipping $50+ · Kissa-approved designs only
+  <span class="promo-x" onclick="document.getElementById('promoBanner').style.display='none'">×</span>
+</div>
+
+<!-- HEADER -->
+<header>
+  <nav class="nav">
+    <div class="nav-left">
+      <a href="#">Shop All</a>
+      <a href="#">Personalize</a>
+      <a href="#meet">Meet Kissa</a>
+      <a href="#">Our Story</a>
+    </div>
+    <div class="logo-wrap">
+      <svg class="logo-kissa-mini kissa-svg"><use href="#kissa-mini"/></svg>
+      <div class="logo-text">
+        <span class="logo-main">CrazyCats</span>
+        <span class="logo-sub">by Kissa 🐱</span>
+      </div>
+    </div>
+    <div class="nav-right">
+      <select style="background:rgba(26,26,26,.06);border:1px solid rgba(196,122,44,.2);color:var(--ink);padding:7px 12px;border-radius:8px;font-family:var(--f-body);font-size:13px;cursor:pointer;outline:none">
+        <option>🇨🇦 CAD</option><option>🇺🇸 USD</option><option>🇬🇧 GBP</option><option>🇦🇺 AUD</option>
+      </select>
+      <button class="nav-icon">🔍</button>
+      <button class="nav-icon" onclick="openModal()">🛒<span class="cart-dot">2</span></button>
+      <button class="nav-cta" onclick="openModal()">Create Yours ✨</button>
+    </div>
+  </nav>
+</header>
+
+<!-- ═══ HERO ═══ -->
+<section class="hero">
+  <div class="hero-inner">
+    <!-- Copy -->
+    <div>
+      <div class="hero-badge">
+        <svg width="20" height="20"><use href="#kissa-mini"/></svg>
+        Kissa-Approved Brand · 14,000+ Happy Customers
+      </div>
+      <h1 class="hero-title">Turn Your<br>Cat Into <em>Art</em> 🐱</h1>
+      <p class="hero-ceo-line">— Approved by Kissa, CEO of CrazyCats</p>
+      <p class="hero-sub">Custom T-shirts, mugs & merch made from your cat's photo. Because every cat deserves to be a celebrity.</p>
+      <div class="hero-btns">
+        <button class="btn btn-dark" onclick="openModal()">Create Yours Now ✨</button>
+        <a href="#bestsellers" class="btn btn-outline">View Best Sellers →</a>
+      </div>
+      <div class="hero-trust">
+        <div class="htrust"><span>🚚</span> Free Shipping $50+</div>
+        <div class="htrust"><span>🔄</span> 30-Day Guarantee</div>
+        <div class="htrust"><span>🔒</span> Secure Checkout</div>
+      </div>
+    </div>
+    <!-- Kissa Visual -->
+    <div class="hero-kissa">
+      <div class="kissa-hero-wrap">
+        <div class="ceo-badge">👑 CEO of CrazyCats</div>
+        <svg class="kissa-svg" width="320" height="420" viewBox="0 0 220 300"><use href="#kissa-full"/></svg>
+        <div class="kissa-glow"></div>
+        <!-- Floating product cards -->
+        <div class="product-float pf1">
+          <span class="pf-icon">👕</span>
+          <div><span>Custom Tee</span><small>$38.00 · ⭐ 4.9</small></div>
+        </div>
+        <div class="product-float pf2">
+          <span class="pf-icon">☕</span>
+          <div><span>Cat Mug</span><small>$29.00 · ⭐ 4.8</small></div>
+        </div>
+        <div class="product-float pf3">
+          <span class="pf-icon">🧥</span>
+          <div><span>Cat Hoodie</span><small>$64.00 · ⭐ 4.9</small></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-bar reveal">
+  <div class="stats-grid">
+    <div><span class="stat-val">14K+</span><div class="stat-lbl">Happy Cat Parents</div></div>
+    <div><span class="stat-val">4.9★</span><div class="stat-lbl">Average Rating</div></div>
+    <div><span class="stat-val">48hr</span><div class="stat-lbl">Fast Processing</div></div>
+    <div><span class="stat-val">50+</span><div class="stat-lbl">Product Styles</div></div>
+  </div>
+</div>
+
+<!-- TRUST BAND -->
+<div class="trust-band reveal">
+  <div class="tbgrid">
+    <div class="tbadge"><div class="tbadge-icon">🚚</div><div><strong>Free Shipping</strong><span>On all orders over $50</span></div></div>
+    <div class="tbadge"><div class="tbadge-icon">🔄</div><div><strong>30-Day Returns</strong><span>No questions asked</span></div></div>
+    <div class="tbadge"><div class="tbadge-icon">🎨</div><div><strong>Artist-Made Designs</strong><span>Kissa reviews every one</span></div></div>
+    <div class="tbadge"><div class="tbadge-icon">🔒</div><div><strong>Secure Checkout</strong><span>SSL encrypted payments</span></div></div>
+  </div>
+</div>
+
+<!-- OFFER STRIP -->
+<div class="offer-strip reveal">
+  <div class="offer-inner">
+    <div><h3>🎁 Buy 2 Items, Get 20% Off</h3><p>Mix & match any products — Kissa-approved bundles only</p></div>
+    <div class="offer-code">CRAZY20</div>
+    <button class="offer-cta" onclick="openModal()">Shop the Bundle →</button>
+  </div>
+</div>
+
+<!-- ═══ HOW IT WORKS ═══ -->
+<section class="how-section">
+  <div class="wrap">
+    <div class="how-header reveal">
+      <div class="eyebrow" style="justify-content:center">Kissa-Approved Process</div>
+      <h2 class="display" style="text-align:center;max-width:580px;margin:0 auto 16px">From Photo to Doorstep in 3 Steps</h2>
+      <p class="lead" style="text-align:center;margin:0 auto">No design skills needed. Just bring your favourite cat photo — we do the rest.</p>
+    </div>
+    <div class="steps-grid">
+      <div class="step-card reveal">
+        <div class="step-num">1</div>
+        <span class="step-icon">📸</span>
+        <h3 class="step-title">Upload Your Cat Photo</h3>
+        <p class="step-desc">Share your favourite snap of your furball. Any pose, any vibe. The goofier, the better — Kissa loves character.</p>
+      </div>
+      <div class="step-card reveal d1">
+        <div class="step-num">2</div>
+        <span class="step-icon">🎨</span>
+        <h3 class="step-title">We Design Your Artwork</h3>
+        <p class="step-desc">Our artists turn your cat's photo into stunning, print-ready artwork. Kissa personally judges each design for quality.</p>
+      </div>
+      <div class="step-card reveal d2">
+        <div class="step-num">3</div>
+        <span class="step-icon">📦</span>
+        <h3 class="step-title">Receive It at Your Door</h3>
+        <p class="step-desc">Your custom merch ships fast, packed beautifully. Open it, love it, show it off. Your cat will be so proud.</p>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:52px" class="reveal d3">
+      <button class="btn btn-orange" onclick="openModal()">Upload Your Cat Now 🐾</button>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ MEET KISSA ═══ -->
+<section class="meet-section" id="meet">
+  <div class="meet-inner">
+    <!-- Kissa big visual -->
+    <div class="meet-kissa-wrap reveal from-left">
+      <div class="meet-kissa-bg">
+        <div class="meet-kissa-ring"></div>
+        <svg viewBox="0 0 220 300" xmlns="http://www.w3.org/2000/svg" style="width:280px;height:auto;filter:drop-shadow(0 20px 40px rgba(196,122,44,.3))">
+          <use href="#kissa-full"/>
+        </svg>
+      </div>
+    </div>
+    <!-- Text -->
+    <div class="meet-text reveal from-right">
+      <div class="eyebrow">The Face Behind the Brand</div>
+      <h2 class="display" style="color:var(--cream)">Meet Kissa 🐱<br><em style="color:var(--orange)">Chief Executive Officer</em></h2>
+      <div class="meet-speech">
+        <p>"Hi, I'm Kissa. I approve every design. I inspect every product. Humans just work here. If it doesn't meet my standards, back to the drawing board it goes — I have very refined taste and absolutely no patience for mediocrity."</p>
+        <cite>— Kissa, CEO of CrazyCats · Est. 2024</cite>
+      </div>
+      <div class="meet-stats">
+        <div class="meet-stat"><span class="meet-stat-num">5,081</span><div class="meet-stat-lbl">Designs Approved</div></div>
+        <div class="meet-stat"><span class="meet-stat-num">0</span><div class="meet-stat-lbl">Bad Days</div></div>
+        <div class="meet-stat"><span class="meet-stat-num">∞</span><div class="meet-stat-lbl">Naps Taken</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ BESTSELLERS ═══ -->
+<section class="products-section" id="bestsellers">
+  <div class="wrap">
+    <div class="products-header reveal">
+      <div>
+        <div class="eyebrow">Kissa's Top Picks</div>
+        <h2 class="display">Best Sellers</h2>
+      </div>
+      <a href="#" class="btn btn-outline" style="padding:13px 26px;font-size:14px">View All Products →</a>
+    </div>
+    <div class="products-grid">
+      <!-- Featured T-Shirt -->
+      <div class="pcard featured reveal" onclick="openModal()">
+        <span class="pcard-badge badge-ink">#1 Best Seller</span>
+        <button class="pcard-wish">🤍</button>
+        <div class="kissa-stamp">
+          <svg class="ks-mini kissa-svg"><use href="#kissa-mini"/></svg>
+          Kissa Approved ✅
+        </div>
+        <div class="pcard-visual">
+          <div class="visual-bg">
+            <div class="pc-tshirt-wrap">
+              <div class="pc-tshirt">
+                <div class="pct-body">
+                  <div class="pct-neck"></div>
+                  <div class="pct-cat">🐱</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="quick-add-overlay"><button class="quick-add-btn">✨ Quick Add to Cart</button></div>
+        </div>
+        <div class="pcard-info">
+          <h3 class="pcard-name">Personalized Cat Portrait T-Shirt</h3>
+          <div class="pcard-stars">
+            <div><span class="s">⭐</span><span class="s">⭐</span><span class="s">⭐</span><span class="s">⭐</span><span class="s">⭐</span></div>
+            <span class="cnt">4.9 · 2,847 reviews</span>
+          </div>
+          <div class="pcard-price">
+            <span class="price-now">$38.00</span>
+            <span class="price-was">$52.00</span>
+            <span class="price-tag">Save 27%</span>
+          </div>
+        </div>
+      </div>
+      <!-- Mug -->
+      <div class="pcard reveal d1" onclick="openModal()">
+        <span class="pcard-badge badge-new">New</span>
+        <button class="pcard-wish">🤍</button>
+        <div class="kissa-stamp">
+          <svg class="ks-mini kissa-svg"><use href="#kissa-mini"/></svg>
+          Kissa Approved ✅
+        </div>
+        <div class="pcard-visual">
+          <div class="visual-bg">
+            <div class="pc-mug-wrap">
+              <div class="pc-mug">
+                <div class="pc-mug-body">🐈</div>
+                <div class="pc-mug-handle"></div>
+              </div>
+            </div>
+          </div>
+          <div class="quick-add-overlay"><button class="quick-add-btn">Add to Cart</button></div>
+        </div>
+        <div class="pcard-info">
+          <h3 class="pcard-name">Personalized Cat Portrait Mug</h3>
+          <div class="pcard-stars">
+            <div><span class="s">⭐</span><span class="s">⭐</span><span class="s">⭐</span><span class="s">⭐</span><span class="s">⭐</span></div>
+            <span class="cnt">4.8 · 1,243 reviews</span>
+          </div>
+          <div class="pcard-price"><span class="price-now">$29.00</span></div>
+        </div>
+      </div>
+      <!-- Hoodie -->
+      <div class="pcard reveal d2" onclick="openModal()">
+        <span class="pcard-badge badge-hot">Hot 🔥</span>
+        <button class="pcard-wish">🤍</button>
+        <div class="kissa-stamp">
+          <svg class="ks-mini kissa-svg"><use href="#kissa-mini"/></svg>
+          Kissa Approved ✅
+        </div>
+        <div class="pcard-visual">
+          <div class="visual-bg">
+            <div class="pc-hoodie-wrap"><span class="pc-hoodie-emoji">🧥</span></div>
+          </div>
+          <div class="quick-add-overlay"><button class="quick-add-btn">Add to Cart</button></div>
+        </div>
+        <div class="pcard-info">
+          <h3 class="pcard-name">Custom Cat Hoodie</h3>
+          <div class="pcard-stars">
+            <div><span class="s">⭐</span><span class="s">⭐</span><span class="s">⭐</span><span class="s">⭐</span><span class="s">⭐</span></div>
+            <span class="cnt">4.9 · 987 reviews</span>
+          </div>
+          <div class="pcard-price">
+            <span class="price-now">$64.00</span>
+            <span class="price-was">$79.00</span>
+            <span class="price-tag">Save $15</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- REVIEWS -->
+<section class="reviews-section">
+  <div class="wrap">
+    <div class="reveal" style="margin-bottom:56px">
+      <div class="eyebrow">Real Cat Parents, Real Love</div>
+      <h2 class="display">The Internet Approved 😻</h2>
+    </div>
+    <div class="rating-hero reveal">
+      <div class="rating-num">4.9</div>
+      <div>
+        <div class="stars-row"><span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span></div>
+        <div class="rating-sub">5,081 verified reviews · Kissa-Approved Brand</div>
+      </div>
+    </div>
+    <div class="reviews-grid">
+      <div class="rcard reveal">
+        <div class="rcard-head">
+          <div class="rcard-av">👩</div>
+          <div><div class="rcard-name">Emma T.</div><div class="rcard-loc">Verified Buyer · Toronto, CA</div></div>
+          <div class="rcard-stars"><span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span></div>
+        </div>
+        <p class="rcard-text">"I ordered the custom tee with Mochi's photo and it came out INSANELY good. The print quality is so detailed — way better than expected. I've worn it four times this week and gotten so many compliments."</p>
+        <div class="rcard-photo">🐈</div>
+        <div class="rcard-verified">✅ Verified Purchase</div>
+      </div>
+      <div class="rcard reveal d1">
+        <div class="rcard-head">
+          <div class="rcard-av">🧑</div>
+          <div><div class="rcard-name">Sophia K.</div><div class="rcard-loc">Verified Buyer · Vancouver, CA</div></div>
+          <div class="rcard-stars"><span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span></div>
+        </div>
+        <p class="rcard-text">"Ordered a custom mug as a gift for my sister. She literally cried when she opened it. This was the best gift I've ever bought. My cat on a hoodie looks absolutely amazing — like actual art."</p>
+        <div class="rcard-photo">🐾</div>
+        <div class="rcard-verified">✅ Verified Purchase</div>
+      </div>
+      <div class="rcard reveal d2">
+        <div class="rcard-head">
+          <div class="rcard-av">👩‍🦱</div>
+          <div><div class="rcard-name">Jasmine R.</div><div class="rcard-loc">Verified Buyer · Calgary, CA</div></div>
+          <div class="rcard-stars"><span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span></div>
+        </div>
+        <p class="rcard-text">"10/10 no notes. The whole brand feels so premium and the mascot Kissa cracks me up. Fast shipping, beautiful packaging, and the product quality is insane. Already ordered a second one!"</p>
+        <div class="rcard-photo">😻</div>
+        <div class="rcard-verified">✅ Verified Purchase</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CATEGORIES -->
+<section class="cat-section">
+  <div class="wrap">
+    <div class="cat-header reveal">
+      <div class="eyebrow" style="justify-content:center">Something for Every Cat Lover</div>
+      <h2 class="display" style="text-align:center">Shop by Category</h2>
+    </div>
+    <div class="cat-grid">
+      <div class="cat-card reveal"><span class="cat-icon">✨</span><div class="cat-name">Personalized</div><div class="cat-count">47 products</div><div class="cat-arrow">→</div></div>
+      <div class="cat-card reveal d1"><span class="cat-icon">👕</span><div class="cat-name">Apparel</div><div class="cat-count">32 products</div><div class="cat-arrow">→</div></div>
+      <div class="cat-card reveal d2"><span class="cat-icon">💎</span><div class="cat-name">Accessories</div><div class="cat-count">28 products</div><div class="cat-arrow">→</div></div>
+      <div class="cat-card reveal d3"><span class="cat-icon">🎁</span><div class="cat-name">Gifts</div><div class="cat-count">19 products</div><div class="cat-arrow">→</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- URGENCY -->
+<section class="urgency-section">
+  <div class="urg-inner">
+    <div class="reveal">
+      <div class="urg-eyebrow"><span class="pulse"></span>Live Now · Limited Drops</div>
+      <h2 class="urgency-title">Limited Edition.<br>Don't Miss Out.</h2>
+      <p class="urgency-sub">We drop exclusive designs every week — once they're gone, Kissa personally refuses to restock them.</p>
+      <div class="countdown">
+        <div class="cd-unit"><span class="cd-num" id="cdH">08</span><span class="cd-lbl">Hours</span></div>
+        <div class="cd-unit"><span class="cd-num" id="cdM">34</span><span class="cd-lbl">Mins</span></div>
+        <div class="cd-unit"><span class="cd-num" id="cdS">17</span><span class="cd-lbl">Secs</span></div>
+      </div>
+      <button class="btn btn-dark" style="background:var(--gold);color:var(--ink)" onclick="openModal()">Grab Yours Before It's Gone →</button>
+    </div>
+    <div class="drops-grid reveal d2">
+      <div class="drop-card" onclick="openModal()"><span class="drop-img">🐱</span><div class="drop-name">Cozy Cat Crewneck</div><div class="drop-left">🔥 7 left</div><div class="drop-bar"><div class="drop-fill" style="width:85%"></div></div></div>
+      <div class="drop-card" onclick="openModal()"><span class="drop-img">🌸</span><div class="drop-name">Floral Cat Tote</div><div class="drop-left">🔥 12 left</div><div class="drop-bar"><div class="drop-fill" style="width:64%"></div></div></div>
+      <div class="drop-card" onclick="openModal()"><span class="drop-img">🖼️</span><div class="drop-name">Framed Cat Print</div><div class="drop-left">🔥 3 left</div><div class="drop-bar"><div class="drop-fill" style="width:95%"></div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- BUNDLE -->
+<section class="bundle-section">
+  <div class="wrap">
+    <div class="bundle-inner">
+      <div class="reveal">
+        <div class="eyebrow">Kissa's Bundle Pick</div>
+        <h2 class="display">Bundle & Save 20%</h2>
+        <p class="lead" style="margin-bottom:28px">Mix and match any 2+ items to save instantly. Kissa calls it "the smart cat move."</p>
+        <div class="bundle-offer">
+          <div class="bundle-offer-l"><strong>The Ultimate Cat Bundle</strong><p>Tee + Mug + Hoodie — perfect gift set</p></div>
+          <div class="bundle-save">$110</div>
+        </div>
+        <p style="font-size:13px;color:var(--muted);margin-bottom:28px">Was $131 — you save $21 🎉</p>
+        <button class="btn btn-orange" onclick="openModal()">Add Bundle to Cart →</button>
+      </div>
+      <div class="bundle-visual reveal d1">
+        <div class="bundle-item"><span>🐱</span><span class="bundle-item-name">Custom Tee</span><span class="bundle-item-price">$38</span></div>
+        <span class="bundle-plus">+</span>
+        <div class="bundle-item"><span>☕</span><span class="bundle-item-name">Cat Mug</span><span class="bundle-item-price">$29</span></div>
+        <span class="bundle-plus">+</span>
+        <div class="bundle-item"><span>🧥</span><span class="bundle-item-name">Hoodie</span><span class="bundle-item-price">$64</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EMAIL -->
+<section class="email-section">
+  <div class="email-inner">
+    <svg class="kissa-svg" width="90" height="90" style="margin:0 auto 20px;animation:kissaFloat 3s ease-in-out infinite"><use href="#kissa-mini"/></svg>
+    <div class="reveal">
+      <div class="eyebrow" style="justify-content:center">Kissa's Mailing List</div>
+      <h2 class="display" style="text-align:center">Get 10% Off Your First Order</h2>
+      <p class="lead" style="text-align:center;margin:0 auto">Subscribe for exclusive drops, cat content, and a discount code. Kissa personally writes the newsletter. (She doesn't, but it sounds fun.)</p>
+    </div>
+    <div class="email-form reveal d1">
+      <input class="email-input" type="email" placeholder="Your email address...">
+      <button class="email-btn" onclick="this.textContent='✅ You\'re in!'">Claim 10% Off 🎁</button>
+    </div>
+    <p style="font-size:12.5px;color:var(--muted);margin-top:16px" class="reveal d2">We'll never spam you. Unsubscribe anytime. Kissa pinky-paw promises 🐾</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="logo-wrap" style="margin-bottom:16px">
+          <svg class="logo-kissa-mini kissa-svg" style="opacity:.8"><use href="#kissa-mini"/></svg>
+          <div class="logo-text">
+            <span class="logo-main">CrazyCats</span>
+            <span class="logo-sub" style="color:var(--orange)">by Kissa 🐱</span>
+          </div>
+        </div>
+        <p>Premium personalized merch for the cat lovers who believe their cat is the main character — because they absolutely are. Kissa agrees.</p>
+        <div class="footer-social">
+          <a href="#" class="f-social">📸</a>
+          <a href="#" class="f-social">🎵</a>
+          <a href="#" class="f-social">🐦</a>
+          <a href="#" class="f-social">📌</a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h5>Shop</h5>
+        <ul>
+          <li><a href="#">Personalized</a></li>
+          <li><a href="#">Apparel</a></li>
+          <li><a href="#">Accessories</a></li>
+          <li><a href="#">Gift Sets</a></li>
+          <li><a href="#">Limited Drops</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Support</h5>
+        <ul>
+          <li><a href="#">Track My Order</a></li>
+          <li><a href="#">Returns & Exchanges</a></li>
+          <li><a href="#">Sizing Guide</a></li>
+          <li><a href="#">FAQs</a></li>
+          <li><a href="#">Contact Us</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Company</h5>
+        <ul>
+          <li><a href="#meet">Meet Kissa</a></li>
+          <li><a href="#">Our Story</a></li>
+          <li><a href="#">Sustainability</a></li>
+          <li><a href="#">Affiliate Program</a></li>
+          <li><a href="#">Careers</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 CrazyCats by Kissa — Made with ❤️ for cat lovers everywhere.</p>
+      <svg class="footer-kissa kissa-svg"><use href="#kissa-mini"/></svg>
+      <p>Privacy · Terms · Cookies</p>
+    </div>
+  </div>
+</footer>
+
+<!-- CHAT WIDGET -->
+<div class="chat-widget">
+  <div class="chat-hint">Kissa says: "Ask me anything 🐱"</div>
+  <button class="chat-btn">💬</button>
+</div>
+
+<!-- STICKY BAR -->
+<div class="sticky-bar" id="stickyBar">
+  <div class="sticky-inner">
+    <div class="sticky-product">
+      <div class="sticky-thumb">
+        <svg style="width:36px;height:36px"><use href="#kissa-mini"/></svg>
+      </div>
+      <div>
+        <div class="sticky-name">Custom Cat Portrait T-Shirt</div>
+        <div class="sticky-meta">⭐ 4.9 (2,847) · Kissa Approved ✅ · Ships 3–5 days</div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:14px">
+      <div class="sticky-price">$38.00</div>
+      <button class="btn btn-dark" style="padding:13px 28px;font-size:14px" onclick="openModal()">Add to Cart 🛒</button>
+    </div>
+  </div>
+</div>
+
+<!-- PRODUCT MODAL -->
+<div class="overlay" id="overlay" onclick="overlayClick(event)">
+  <div class="modal" id="modal">
+    <div class="modal-layout">
+      <div class="modal-left">
+        <button class="modal-close" onclick="closeModal()">✕</button>
+        <!-- Kissa mascot in modal -->
+        <svg viewBox="0 0 220 300" style="width:200px;height:auto;margin-bottom:16px;filter:drop-shadow(0 10px 24px rgba(196,122,44,.25))"><use href="#kissa-full"/></svg>
+        <div style="background:rgba(196,122,44,.1);border:1px solid rgba(196,122,44,.2);border-radius:12px;padding:12px 16px;text-align:center;max-width:200px">
+          <p style="font-size:12px;font-style:italic;color:var(--muted);">"Upload your cat photo and I'll make sure the design is worthy."</p>
+          <p style="font-size:11px;font-weight:700;color:var(--orange);margin-top:6px">— Kissa, Chief Design Officer</p>
+        </div>
+      </div>
+      <div class="modal-right">
+        <div class="kissa-approved" style="margin-bottom:12px">
+          <svg class="mini-kissa kissa-svg"><use href="#kissa-mini"/></svg>
+          Kissa Approved ✅
+        </div>
+        <div class="modal-tag">✨ #1 Bestseller · Artist-Made</div>
+        <h2 class="modal-title">Personalized Cat Portrait T-Shirt</h2>
+        <div class="modal-stars">⭐⭐⭐⭐⭐ <span>4.9 (2,847 reviews)</span></div>
+        <div class="modal-price">
+          <span class="modal-price-now">$38.00</span>
+          <span class="modal-price-was">$52.00</span>
+          <span class="modal-price-save">Save 27%</span>
+        </div>
+        <div class="modal-label">📸 Upload Your Cat Photo</div>
+        <div class="upload-zone">
+          <span class="up-icon">🐾</span>
+          <p>Drag & drop or <strong>click to upload</strong><br>JPG, PNG up to 10MB · Any pose works</p>
+        </div>
+        <div class="modal-label">Size</div>
+        <div class="sizes">
+          <button class="sz">XS</button><button class="sz on">S</button>
+          <button class="sz">M</button><button class="sz">L</button>
+          <button class="sz">XL</button><button class="sz">XXL</button>
+        </div>
+        <div class="modal-label">Color</div>
+        <div class="colors">
+          <div class="cl on" style="background:#F5F5F0;box-shadow:0 0 0 1px #ccc"></div>
+          <div class="cl" style="background:#1A1A1A"></div>
+          <div class="cl" style="background:#C47A2C"></div>
+          <div class="cl" style="background:#3D7A55"></div>
+          <div class="cl" style="background:#D4745A"></div>
+        </div>
+        <div class="delivery-note">📦 Estimated delivery: Mar 27 – Mar 31, 2026</div>
+        <button class="modal-atc" onclick="closeModal()">🛒 Add to Cart — $38.00</button>
+        <div class="fbt">
+          <div class="modal-label">Frequently Bought Together</div>
+          <div class="fbt-items">
+            <div class="fbt-product"><span>🐱</span><p>Portrait Tee<br><strong>$38</strong></p></div>
+            <span class="fbt-plus">+</span>
+            <div class="fbt-product"><span>☕</span><p>Cat Mug<br><strong>$29</strong></p></div>
+            <span class="fbt-plus">+</span>
+            <div class="fbt-product"><span>🧥</span><p>Hoodie<br><strong>$64</strong></p></div>
+          </div>
+          <div class="fbt-deal">💰 Add all 3 and save 20% — $110 (was $131)</div>
+          <button class="btn btn-outline" style="width:100%;justify-content:center;font-size:14px;padding:13px">Add Full Bundle & Save →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* Scroll Reveal */
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('in') })
+}, { threshold: 0.08 })
+document.querySelectorAll('.reveal').forEach(el => obs.observe(el))
+
+/* Countdown */
+;(function(){
+  const key = 'ccTimer3'
+  let end = localStorage.getItem(key)
+  if(!end || Date.now() > parseInt(end)){
+    end = Date.now() + (8*3600+34*60+17)*1000
+    localStorage.setItem(key, end)
+  }
+  function tick(){
+    const diff = Math.max(0, parseInt(localStorage.getItem(key)) - Date.now())
+    const h = Math.floor(diff/3600000)
+    const m = Math.floor((diff%3600000)/60000)
+    const s = Math.floor((diff%60000)/1000)
+    const el = (id,v) => { const e=document.getElementById(id); if(e) e.textContent=String(v).padStart(2,'0') }
+    el('cdH',h); el('cdM',m); el('cdS',s)
+  }
+  tick(); setInterval(tick,1000)
+})()
+
+/* Sticky Bar */
+window.addEventListener('scroll', () => {
+  document.getElementById('stickyBar').classList.toggle('visible', window.scrollY > 600)
+}, {passive:true})
+
+/* Modal */
+function openModal(){
+  document.getElementById('overlay').classList.add('open')
+  document.body.style.overflow='hidden'
+}
+function closeModal(){
+  document.getElementById('overlay').classList.remove('open')
+  document.body.style.overflow=''
+}
+function overlayClick(e){ if(e.target===document.getElementById('overlay')) closeModal() }
+
+/* Popup (4s delay, once per session) */
+setTimeout(() => {
+  if(!sessionStorage.getItem('kissaPopup')){
+    document.getElementById('popupOverlay').classList.add('open')
+    sessionStorage.setItem('kissaPopup','1')
+  }
+}, 4000)
+function closePopup(){ document.getElementById('popupOverlay').classList.remove('open') }
+document.getElementById('popupOverlay').addEventListener('click', function(e){ if(e.target===this) closePopup() })
+
+/* Size selector */
+document.querySelectorAll('.sz').forEach(btn => {
+  btn.addEventListener('click', function(){
+    this.closest('.sizes').querySelectorAll('.sz').forEach(b=>b.classList.remove('on'))
+    this.classList.add('on')
+  })
+})
+
+/* Color selector */
+document.querySelectorAll('.cl').forEach(btn => {
+  btn.addEventListener('click', function(){
+    this.closest('.colors').querySelectorAll('.cl').forEach(b=>b.classList.remove('on'))
+    this.classList.add('on')
+  })
+})
+
+/* Wishlist toggle */
+document.querySelectorAll('.pcard-wish').forEach(btn => {
+  btn.addEventListener('click', function(e){
+    e.stopPropagation()
+    this.textContent = this.textContent==='🤍' ? '❤️' : '🤍'
+  })
+})
+</script>
+</body>
+</html>
